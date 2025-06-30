@@ -24,7 +24,7 @@
 </div>
 
 <script>
-  // ✅ Same Firebase config (replace with your own again)
+ 
  const firebaseConfig = {
   apiKey: "AIzaSyBBCX02VAQcP3RZrlUvz5SUlyrVGSpGkwU",
   authDomain: "bustrackingsystem-c08dc.firebaseapp.com",
@@ -38,14 +38,13 @@
   const auth = firebase.auth();
   const db = firebase.firestore();
 
-  // ⚠ To create other users, we must use Admin SDK on backend (secure).
-  // So here we simulate by storing pending driver data.
+  
   async function createDriver() {
     const email = document.getElementById("driverEmail").value;
     const password = document.getElementById("driverPassword").value;
 
     try {
-      // Save as pending driver, real registration must be done via login page
+     
       await db.collection("pendingDrivers").add({ email, password });
       document.getElementById("status").innerText = "Driver details saved. Ask them to register.";
     } catch (error) {
