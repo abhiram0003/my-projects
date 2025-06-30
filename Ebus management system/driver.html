@@ -30,7 +30,7 @@
 </div>
 
 <script>
-  // ✅ Firebase Config (replace with your real keys)
+  
   const firebaseConfig = {
   apiKey: "AIzaSyBBCX02VAQcP3RZrlUvz5SUlyrVGSpGkwU",
   authDomain: "bustrackingsystem-c08dc.firebaseapp.com",
@@ -44,7 +44,7 @@
   const auth = firebase.auth();
   const db = firebase.firestore();
 
-  // Submit Bus Info
+ 
   async function submitBus() {
     const busNumber = document.getElementById("busNumber").value;
     const route = document.getElementById("route").value;
