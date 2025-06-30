@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Admin Panel - Create Driver</title>
+  <script src="https://www.gstatic.com/firebasejs/10.3.1/firebase-app.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.3.1/firebase-auth.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.3.1/firebase-firestore.js"></script>
+  <style>
+    body { font-family: Arial; background: #eef; padding: 30px; }
+    .box { width: 350px; margin: auto; background: white; padding: 20px; border-radius: 10px; }
+    input { width: 100%; padding: 10px; margin: 5px 0; }
+    button { padding: 10px; width: 100%; background: #007bff; color: white; border: none; }
+    
+  </style>
+</head>
+<body>
+
+<div class="box">
+  <h2>Create Driver Login</h2>
+  <input type="email" id="driverEmail" placeholder="Driver Email">
+  <input type="password" id="driverPassword" placeholder="Password">
+  <button onclick="createDriver()">Create Driver</button>
+  <p id="status"></p>
+</div>
+
+<script>
+  // ✅ Same Firebase config (replace with your own again)
+ const firebaseConfig = {
+  apiKey: "AIzaSyBBCX02VAQcP3RZrlUvz5SUlyrVGSpGkwU",
+  authDomain: "bustrackingsystem-c08dc.firebaseapp.com",
+  projectId: "bustrackingsystem-c08dc",
+  storageBucket: "bustrackingsystem-c08dc.firebasestorage.app",
+  messagingSenderId: "86736010761",
+  appId: "1:86736010761:web:6e80da8149f15b690e82d8",
+  measurementId: "G-JZZS9MQQLB"
+  };
+  firebase.initializeApp(firebaseConfig);
+  const auth = firebase.auth();
+  const db = firebase.firestore();
+
+  // ⚠ To create other users, we must use Admin SDK on backend (secure).
+  // So here we simulate by storing pending driver data.
+  async function createDriver() {
+    const email = document.getElementById("driverEmail").value;
+    const password = document.getElementById("driverPassword").value;
+
+    try {
+      // Save as pending driver, real registration must be done via login page
+      await db.collection("pendingDrivers").add({ email, password });
+      document.getElementById("status").innerText = "Driver details saved. Ask them to register.";
+    } catch (error) {
+      document.getElementById("status").innerText = error.message;
+    }
+  }
+</script>
+
+</body>
+</html>
+<!-- Add below the form -->
+<button onclick="location.href='index.html'">Back to Login</button>
+<button onclick="location.href='track.html'">Track a Bus</button>
+

@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Driver Location Sender</title>
+  <script src="https://www.gstatic.com/firebasejs/10.3.1/firebase-app.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.3.1/firebase-database.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.3.1/firebase-auth.js"></script>
+  <style>
+    body { font-family: Arial; padding: 20px; background: #eef; }
+    .box { max-width: 400px; margin: auto; padding: 20px; background: #fff; border-radius: 10px; }
+  </style>
+</head>
+<body>
+
+<div class="box">
+  <h2>Simulate Bus Location</h2>
+  <input type="text" id="busId" placeholder="Enter Bus ID (number)">
+  <button onclick="startSending()">Start Sending Location</button>
+  <p id="msg"></p>
+</div>
+
+<script>
+  const firebaseConfig = {
+  apiKey: "AIzaSyBBCX02VAQcP3RZrlUvz5SUlyrVGSpGkwU",
+  authDomain: "bustrackingsystem-c08dc.firebaseapp.com",
+  projectId: "bustrackingsystem-c08dc",
+  storageBucket: "bustrackingsystem-c08dc.firebasestorage.app",
+  messagingSenderId: "86736010761",
+  appId: "1:86736010761:web:6e80da8149f15b690e82d8",
+  measurementId: "G-JZZS9MQQLB"
+  };
+  firebase.initializeApp(firebaseConfig);
+  const db = firebase.database();
+
+  let intervalId;
+
+  function startSending() {
+    const busId = document.getElementById("busId").value;
+    if (!busId) {
+      document.getElementById("msg").innerText = "Enter a valid Bus ID";
+      return;
+    }
+
+    intervalId = setInterval(() => {
+      const lat = 16.5 + Math.random() * 0.1;
+      const lng = 80.6 + Math.random() * 0.1;
+      db.ref("busLocations/" + busId).set({ lat, lng, timestamp: Date.now() });
+      document.getElementById("msg").innerText = `Location updated for bus ${busId}`;
+    }, 5000);
+  }
+</script>
+
+</body>
+</html>

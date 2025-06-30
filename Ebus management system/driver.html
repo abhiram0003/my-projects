@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Driver Dashboard</title>
+  <script src="https://www.gstatic.com/firebasejs/10.3.1/firebase-app.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.3.1/firebase-auth.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.3.1/firebase-firestore.js"></script>
+  <style>
+    body { font-family: Arial; background: #f0fff0; padding: 30px; }
+    .box { width: 400px; margin: auto; background: white; padding: 20px; border-radius: 10px; }
+    input, select { width: 100%; padding: 10px; margin: 5px 0; }
+    button { padding: 10px; width: 100%; background: #28a745; color: white; border: none; }
+  </style>
+</head>
+<body>
+
+<div class="box">
+  <h2>Post Bus Information</h2>
+  <input type="text" id="busNumber" placeholder="Bus Number">
+  <input type="text" id="route" placeholder="Route (Source - Destination)">
+  <select id="busType">
+    <option value="AC">AC</option>
+    <option value="Non-AC">Non-AC</option>
+    <option value="Sleeper">Sleeper</option>
+    <option value="Seater">Seater</option>
+  </select>
+  <input type="text" id="contact" placeholder="Contact Number or Email">
+  <button onclick="submitBus()">Submit Info</button>
+  <p id="msg"></p>
+</div>
+
+<script>
+  // ✅ Firebase Config (replace with your real keys)
+  const firebaseConfig = {
+  apiKey: "AIzaSyBBCX02VAQcP3RZrlUvz5SUlyrVGSpGkwU",
+  authDomain: "bustrackingsystem-c08dc.firebaseapp.com",
+  projectId: "bustrackingsystem-c08dc",
+  storageBucket: "bustrackingsystem-c08dc.firebasestorage.app",
+  messagingSenderId: "86736010761",
+  appId: "1:86736010761:web:6e80da8149f15b690e82d8",
+  measurementId: "G-JZZS9MQQLB"
+  };
+  firebase.initializeApp(firebaseConfig);
+  const auth = firebase.auth();
+  const db = firebase.firestore();
+
+  // Submit Bus Info
+  async function submitBus() {
+    const busNumber = document.getElementById("busNumber").value;
+    const route = document.getElementById("route").value;
+    const busType = document.getElementById("busType").value;
+    const contact = document.getElementById("contact").value;
+    const user = auth.currentUser;
+
+    if (!user) {
+      document.getElementById("msg").innerText = "You must be logged in.";
+      return;
+    }
+
+    try {
+      await db.collection("buses").add({
+        driverId: user.uid,
+        busNumber,
+        route,
+        busType,
+        contact,
+        timestamp: Date.now()
+      });
+      document.getElementById("msg").innerText = "Bus info submitted successfully!";
+    } catch (error) {
+      document.getElementById("msg").innerText = error.message;
+    }
+  }
+</script>
+
+</body>
+</html>

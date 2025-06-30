@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Track Bus</title>
+  <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
+  <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.3.1/firebase-app.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.3.1/firebase-database.js"></script>
+  <style>
+    body { font-family: Arial; margin: 0; padding: 0; }
+    #map { height: 90vh; }
+    #inputBox { padding: 10px; background: #f4f4f4; }
+    input, button { padding: 8px; margin: 5px; }
+  </style>
+</head>
+<body>
+
+<div id="inputBox">
+  <input type="text" id="busId" placeholder="Enter Bus ID to Track">
+  <button onclick="trackBus()">Track Bus</button>
+</div>
+<div id="map"></div>
+
+<script>
+  const firebaseConfig = {
+  apiKey: "AIzaSyBBCX02VAQcP3RZrlUvz5SUlyrVGSpGkwU",
+  authDomain: "bustrackingsystem-c08dc.firebaseapp.com",
+  projectId: "bustrackingsystem-c08dc",
+  storageBucket: "bustrackingsystem-c08dc.firebasestorage.app",
+  messagingSenderId: "86736010761",
+  appId: "1:86736010761:web:6e80da8149f15b690e82d8",
+  measurementId: "G-JZZS9MQQLB"
+  };
+  firebase.initializeApp(firebaseConfig);
+  const db = firebase.database();
+
+  const map = L.map('map').setView([16.5062, 80.6480], 12);
+  L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png').addTo(map);
+  let marker = null;
+
+  function trackBus() {
+    const busId = document.getElementById("busId").value;
+    if (!busId) return alert("Enter Bus ID");
+
+    db.ref("busLocations/" + busId).on("value", snapshot => {
+      const data = snapshot.val();
+      if (data) {
+        const latlng = [data.lat, data.lng];
+        if (marker) {
+          marker.setLatLng(latlng);
+        } else {
+          marker = L.marker(latlng).addTo(map).bindPopup("Bus Location").openPopup();
+        }
+        map.setView(latlng, 14);
+      }
+    });
+  }
+</script>
+
+</body>
+</html>

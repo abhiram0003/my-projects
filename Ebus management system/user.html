@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>User Dashboard</title>
+  <script src="https://www.gstatic.com/firebasejs/10.3.1/firebase-app.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.3.1/firebase-auth.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.3.1/firebase-firestore.js"></script>
+  <style>
+    body { font-family: Arial; background: #fffaf0; padding: 30px; }
+    .box { width: 500px; margin: auto; background: white; padding: 20px; border-radius: 10px; }
+    input { width: 48%; padding: 10px; margin: 5px 1%; display: inline-block; }
+    button { width: 100%; padding: 10px; background: #007bff; color: white; border: none; }
+    .bus-card { background: #f9f9f9; margin: 10px 0; padding: 10px; border-radius: 8px; border: 1px solid #ddd; }
+  </style>
+</head>
+<body>
+
+<div class="box">
+  <h2>Search Bus by Route</h2>
+  <input type="text" id="source" placeholder="Source">
+  <input type="text" id="destination" placeholder="Destination">
+  <button onclick="searchBuses()">Search</button>
+  <h3>Available Buses</h3>
+  <div id="results"></div>
+</div>
+
+<script>
+  // ✅ Firebase config (use your real keys)
+  const firebaseConfig = {
+  apiKey: "AIzaSyBBCX02VAQcP3RZrlUvz5SUlyrVGSpGkwU",
+  authDomain: "bustrackingsystem-c08dc.firebaseapp.com",
+  projectId: "bustrackingsystem-c08dc",
+  storageBucket: "bustrackingsystem-c08dc.firebasestorage.app",
+  messagingSenderId: "86736010761",
+  appId: "1:86736010761:web:6e80da8149f15b690e82d8",
+  measurementId: "G-JZZS9MQQLB"
+  };
+  firebase.initializeApp(firebaseConfig);
+  const db = firebase.firestore();
+
+  async function searchBuses() {
+    const source = document.getElementById("source").value.toLowerCase();
+    const destination = document.getElementById("destination").value.toLowerCase();
+    const results = document.getElementById("results");
+    results.innerHTML = "";
+
+    try {
+      const snapshot = await db.collection("buses").get();
+      snapshot.forEach(doc => {
+        const data = doc.data();
+        const route = data.route.toLowerCase();
+        if (route.includes(source) && route.includes(destination)) {
+          results.innerHTML += `
+            <div class="bus-card">
+              <strong>Bus No:</strong> ${data.busNumber}<br>
+              <strong>Route:</strong> ${data.route}<br>
+              <strong>Type:</strong> ${data.busType}<br>
+              <strong>Contact:</strong> ${data.contact}
+            </div>
+          `;
+        }
+      });
+
+      if (results.innerHTML === "") {
+        results.innerHTML = "No matching buses found.";
+      }
+    } catch (error) {
+      results.innerHTML = "Error fetching buses: " + error.message;
+    }
+  }
+</script>
+
+</body>
+</html>
